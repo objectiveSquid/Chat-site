@@ -32,19 +32,6 @@ class PacketSocket:
         return packet
 
     def send(self, packet: Packet) -> None:
-        self.__sock.sendall(
-            packet.id.to_bytes(SHARED_CONFIG["packets"]["packet_id_bytes"])
-        )
-        self.__sock.sendall(
-            PACKET_CLASS_TO_TYPE[packet.__class__].value.to_bytes(
-                SHARED_CONFIG["packets"]["packet_type_bytes"]
-            )
-        )
-        self.__sock.sendall(
-            packet.data_length.to_bytes(
-                SHARED_CONFIG["packets"]["packet_data_length_bytes"]
-            )
-        )
         self.__sock.sendall(packet.compile())
 
     @property

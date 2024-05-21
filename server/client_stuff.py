@@ -9,6 +9,7 @@ from shared.packets import (
     Packet,
 )
 from shared.packet_socket import PacketSocket
+from server.db_handler import DBWrapper
 from shared.config import SERVER_CONFIG
 
 if TYPE_CHECKING:
@@ -39,6 +40,7 @@ class ServerSideClient(threading.Thread):
 
     def run(self) -> None:
         self.__running = True
+        self.__db_wrapper = DBWrapper()
 
         # authenticate
         start_time = time.time()
@@ -67,8 +69,8 @@ class ServerSideClient(threading.Thread):
                     return
 
                 self.__logger.debug("Recieved authentication packet")
-                self.__authenticated, username = (
-                    self.__server_thread.db_wrapper.check_token(auth_packet.token)
+                self.__authenticated, username = self.__db_wrapper.check_token(
+                    auth_packet.token
                 )
 
                 response_packet = ServerPackets.Authenticate(auth_packet.id)

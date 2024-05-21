@@ -6,6 +6,7 @@ import hashlib
 import random
 import time
 import enum
+import os
 
 
 class AddUserResult(enum.Enum):
@@ -24,11 +25,18 @@ class Message:
 
 class DBWrapper:
     def __init__(self) -> None:
+        os.makedirs(
+            os.path.split(SERVER_CONFIG["database"]["filepath"])[0], exist_ok=True
+        )
         self.__conn = sqlite3.connect(
             str(SERVER_CONFIG["database"]["filepath"]),
             SERVER_CONFIG["database"]["connect_timeout"],
         )
         self.__cursor = self.__conn.cursor()
+
+    def __del__(self) -> None:
+        self.__cursor.close()
+        self.__conn.close()
 
     def ensure_tables(self) -> None:
         self.__cursor.execute(
@@ -70,15 +78,15 @@ class DBWrapper:
 
     def check_token(self, token: str) -> tuple[bool, str | None]:
         self.__cursor.execute(
-            "SELECT username FROM users WHERE token = ?",
+            "SELECT username FROM users WHERE token_hash = ?",
             [hashlib.sha512(token.encode()).digest()],
         )
-        usernames = self.__cursor.fetchall()
+        usernames = self.__cursor.fetchone()
 
-        if len(usernames) == 0:
+        if usernames == None:
             return False, None  # token doesnt exist
 
-        return usernames[0][0]
+        return True, usernames[0]
 
     def fetch_messages(
         self, first_user: str, second_user: str, time_back_secs: int
