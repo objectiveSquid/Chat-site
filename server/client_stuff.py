@@ -45,7 +45,7 @@ class ServerSideClient(threading.Thread):
         while self.__running:
             if (
                 time.time()
-                < start_time
+                > start_time
                 + SERVER_CONFIG["connection"]["wait_for_authentication_timeout_secs"]
             ):
                 self.stop(send_quit=False)
