@@ -25,7 +25,7 @@ class ServerSideClient(threading.Thread):
         super().__init__(
             name=f"ChatServerSideClient (Address: {sock.getpeername()[0]})"
         )
-        self.__logger = logging.getLogger("Client %s:%s", *sock.getpeername())
+        self.__logger = logging.getLogger(f"Client {':'.join(sock.getpeername())}")
 
         self.__packet_sock = PacketSocket(sock)
         self.__pending_packets = []
