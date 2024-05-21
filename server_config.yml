@@ -1,0 +1,15 @@
+database:
+  filepath: "database/database.db"
+  connect_timeout: 3
+
+  token_length: 16
+  token_charset: "abcdefghijklmmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
+
+  min_username_length: 3
+  max_username_length: 32
+
+connection:
+  listen_address: "192.168.1.103"
+  listen_port: 6666
+
+  wait_for_authentication_timeout_secs: 5

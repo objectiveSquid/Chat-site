@@ -1,0 +1,4 @@
+packets:
+  packet_id_bytes: 4
+  packet_type_bytes: 2
+  packet_data_length_bytes: 4
