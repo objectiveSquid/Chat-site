@@ -43,7 +43,7 @@ class Server(threading.Thread):
         if sys.platform != "win32":
             self.__sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.__sock.bind((address, port))
-        self.__sock.listen(2)
+        self.__sock.listen(SERVER_CONFIG["connection"]["accept_backlog"])
         self.__sock.setblocking(True)
 
     @property

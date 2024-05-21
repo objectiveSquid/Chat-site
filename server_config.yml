@@ -13,3 +13,4 @@ connection:
   listen_port: 6666
 
   wait_for_authentication_timeout_secs: 5
+  accept_backlog: 3
