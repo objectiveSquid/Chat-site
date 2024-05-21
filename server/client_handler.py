@@ -27,7 +27,6 @@ class Server(threading.Thread):
             try:
                 new_client_sock = self.__sock.accept()[0]
             except OSError:
-                raise
                 self.stop()
                 break
 
