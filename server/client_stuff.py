@@ -1,4 +1,3 @@
-from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from shared.packets import (
@@ -15,6 +14,7 @@ if TYPE_CHECKING:
     from .client_handler import Server
 
 import threading
+import logging
 import socket
 import time
 
@@ -24,6 +24,8 @@ class ServerSideClient(threading.Thread):
         super().__init__(
             name=f"ChatServerSideClient (Address: {sock.getpeername()[0]})"
         )
+        self.__logger = logging.getLogger("Client %s:%s", *sock.getpeername())
+
         self.__packet_sock = PacketSocket(sock)
         self.__pending_packets = []
         self.__server_thread = server_thread
@@ -47,23 +49,33 @@ class ServerSideClient(threading.Thread):
                 return
 
             try:
+                self.__logger.debug("Waiting for authentication packet")
                 auth_packet: ClientPackets.Authenticate = self.__packet_sock.recv()  # type: ignore
                 if auth_packet.type != PacketType.client_authenticate:
+                    self.__logger.error("Client sent invalid first packet")
+                    self.__logger.debug("Responding with invalid packet type")
                     error_packet = SharedPackets.InvalidPacketType(auth_packet.id)
                     error_packet.init_packet_from_params(
                         [PacketType.client_authenticate]
                     )
                     self.__packet_sock.send(error_packet)
+                    self.__logger.debug("Sent invalid packet type")
                     self.__running = False
                     return
 
+                self.__logger.debug("Recieved authentication packet")
                 self.__authenticated, username = (
                     self.__server_thread.db_wrapper.check_token(auth_packet.token)
                 )
 
                 response_packet = ServerPackets.Authenticate(auth_packet.id)
                 response_packet.init_packet_from_params(self.__authenticated, username)
+                self.__logger.debug(
+                    "Sending authentication response packet (authenticated: %s)",
+                    response_packet.success,
+                )
                 self.__packet_sock.send(response_packet)
+                self.__logger.debug("Sent authentication response packet")
             except BlockingIOError:
                 continue
             except OSError:
@@ -73,13 +85,16 @@ class ServerSideClient(threading.Thread):
         # main loop
         while self.__running:
             try:
-                self.__handle_packet(self.__packet_sock.recv())
+                packet = self.__packet_sock.recv()
+                self.__logger.debug("Recieved %s packet", packet.type.name)
+                self.__handle_packet(packet)
             except BlockingIOError:
                 continue
             except OSError:
                 self.stop(send_quit=False)
                 return
 
+        self.__logger.info("Quitting")
         # quit
         if not self.__send_quit:
             return

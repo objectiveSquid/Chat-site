@@ -60,6 +60,7 @@ SERVER_CONFIG_STRUCTURE = {
         "listen_address": str,
         "listen_port": int,
         "wait_for_authentication_timeout_secs": int,
+        "accept_backlog": int,
     },
 }
 

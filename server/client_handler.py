@@ -3,6 +3,7 @@ from shared.config import SERVER_CONFIG
 from .db_handler import DBWrapper
 
 import threading
+import logging
 import socket
 import sys
 
@@ -10,19 +11,28 @@ import sys
 class Server(threading.Thread):
     def __init__(self) -> None:
         super().__init__(name="ChatServer")
+        self.__logger = logging.getLogger("Server")
+
+        self.__logger.debug("Initializing server socket")
         self.__create_and_bind_socket(
             SERVER_CONFIG["connection"]["listen_address"],
             SERVER_CONFIG["connection"]["listen_port"],
         )
+        self.__logger.info("Initialized server socket")
 
         self.__running = False
         self.__clients: list[ServerSideClient] = []
         self.__db_wrapper = DBWrapper()
+        self.__logger.debug("Ensuring database tables")
         self.__db_wrapper.ensure_tables()
+        self.__logger.debug("Ensured database tables")
 
     def run(self) -> None:
         self.__running = True
 
+        self.__logger.info(
+            "Now accepting connection on %s:%s", *self.__sock.getsockname()
+        )
         while self.__running:
             try:
                 new_client_sock = self.__sock.accept()[0]
@@ -30,12 +40,21 @@ class Server(threading.Thread):
                 self.stop()
                 break
 
+            self.__logger.info(
+                "New client connection from %s:%s", *new_client_sock.getpeername()
+            )
             new_client_sock.setblocking(False)
             new_client = ServerSideClient(new_client_sock, self)
             new_client.start()
             self.__clients.append(new_client)
 
-    def stop(self) -> None:
+        self.__logger.info("Stopping server")
+        self.__logger.debug("Stopping all client threads")
+        for client in self.__clients:
+            client.stop(self.__send_quit)
+
+    def stop(self, send_quit: bool = True) -> None:
+        self.__send_quit = send_quit
         self.__running = False
 
     def __create_and_bind_socket(self, address: str, port: int) -> None:
