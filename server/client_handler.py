@@ -31,7 +31,7 @@ class Server(threading.Thread):
         self.__running = True
 
         self.__logger.info(
-            "Now accepting connection on %s:%s", *self.__sock.getsockname()
+            "Now accepting connections on %s:%s", *self.__sock.getsockname()
         )
         while self.__running:
             try:
