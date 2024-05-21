@@ -10,8 +10,7 @@ configure_logger(logging.DEBUG)
 
 def main() -> None:
     conn = Connection(CLIENT_CONFIG["user"]["token"])
-    conn.start()
-    conn.stop()
+    conn.run()
 
 
 if __name__ == "__main__":

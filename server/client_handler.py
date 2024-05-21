@@ -2,15 +2,13 @@ from .client_stuff import ServerSideClient
 from shared.config import SERVER_CONFIG
 from .db_handler import DBWrapper
 
-import threading
 import logging
 import socket
 import sys
 
 
-class Server(threading.Thread):
+class Server:
     def __init__(self) -> None:
-        super().__init__(name="ChatServer")
         self.__logger = logging.getLogger("Server")
 
         self.__logger.debug("Initializing server socket")

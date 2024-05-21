@@ -2,14 +2,12 @@ from shared.packets import ServerPackets, SharedPackets, ClientPackets, Packet
 from shared.packet_socket import PacketSocket
 from shared.config import CLIENT_CONFIG
 
-import threading
 import logging
 import socket
 
 
-class Connection(threading.Thread):
+class Connection:
     def __init__(self, token: str) -> None:
-        super().__init__(name="ChatConnection")
         self.__logger = logging.getLogger("Connection")
 
         self.__sock = socket.socket()

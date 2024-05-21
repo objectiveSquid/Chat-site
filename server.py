@@ -9,8 +9,7 @@ configure_logger(logging.DEBUG)
 
 def main() -> None:
     server = Server()
-    server.start()
-    server.join()
+    server.run()
 
 
 if __name__ == "__main__":
