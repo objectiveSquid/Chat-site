@@ -1,5 +1,5 @@
 from shared.logger import configure_logger
-from server.client_handler import Server
+from server import Server
 
 import logging
 

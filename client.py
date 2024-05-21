@@ -1,6 +1,6 @@
 from shared.logger import configure_logger
-from client.connection import Connection
 from shared.config import CLIENT_CONFIG
+from client import Connection
 
 import logging
 
