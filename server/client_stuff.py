@@ -51,7 +51,7 @@ class ServerSideClient(threading.Thread):
                 + SERVER_CONFIG["connection"]["wait_for_authentication_timeout_secs"]
             ):
                 self.stop(send_quit=False)
-                return
+                break
 
             try:
                 self.__logger.debug("Waiting for authentication packet")
@@ -64,28 +64,28 @@ class ServerSideClient(threading.Thread):
                         [PacketType.client_authenticate]
                     )
                     self.__packet_sock.send(error_packet)
-                    self.__logger.debug("Sent invalid packet type")
-                    self.__running = False
-                    return
+                    self.stop(send_quit=False)
+                    break
 
-                self.__logger.debug("Recieved authentication packet")
                 self.__authenticated, username = self.__db_wrapper.check_token(
                     auth_packet.token
                 )
 
                 response_packet = ServerPackets.Authenticate(auth_packet.id)
                 response_packet.init_packet_from_params(self.__authenticated, username)
-                self.__logger.debug(
-                    "Sending authentication response packet (authenticated: %s)",
-                    response_packet.success,
-                )
                 self.__packet_sock.send(response_packet)
-                self.__logger.debug("Sent authentication response packet")
+
+                if not self.__authenticated:
+                    self.__logger.info("Client sent invalid token")
+                    self.stop(send_quit=False)
+                    break
+                self.__logger.info("Successfully authenticated")
+                break
             except BlockingIOError:
                 continue
             except OSError:
                 self.stop(send_quit=False)
-                return
+                break
 
         # main loop
         while self.__running:
@@ -112,7 +112,7 @@ class ServerSideClient(threading.Thread):
         match input_packet.type:
             case PacketType.quit:
                 self.__server_thread.clients.remove(self)
-                self.__packet_sock.raw_socket.close()
+                self.__packet_sock.raising_socket.close()
                 self.stop(send_quit=False)
             case _:
                 error_packet = SharedPackets.InvalidPacketType(input_packet.id)

@@ -35,11 +35,6 @@ class Connection:
             try:
                 auth_packet = ClientPackets.Authenticate()
                 auth_packet.init_packet_from_params(self.__token)
-                self.__logger.debug(
-                    "Sending authentication packet (length: %s, id: %s)",
-                    auth_packet.data_length,
-                    auth_packet.id,
-                )
                 response_packet: ServerPackets.Authenticate = self.send_and_wait_for_response(auth_packet)  # type: ignore
                 self.__logger.debug(
                     "Recieved authentication response (username: %s, length: %s)",
@@ -53,9 +48,10 @@ class Connection:
                         "Incorrect token supplied (token: %s)",
                         CLIENT_CONFIG["user"]["token"],
                     )
-                    self.stop()
+                    self.stop(send_quit=False)
                     break
                 self.__logger.info("Successfully authenticated")
+                break
             except OSError:
                 self.__running = False
 
