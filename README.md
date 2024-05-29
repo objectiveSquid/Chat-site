@@ -1,2 +1,2 @@
 # ObjectiveChat
-A chat client, and server, written in Python 3.12
+A (console) chat client, and server, written in Python 3.12
