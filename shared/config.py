@@ -83,6 +83,12 @@ CLIENT_CONFIG_STRUCTURE = {
 }
 
 
-SERVER_CONFIG = safely_load_config_file("server_config.yml", SERVER_CONFIG_STRUCTURE)
-SHARED_CONFIG = safely_load_config_file("shared_config.yml", SHARED_CONFIG_STRUCTURE)
-CLIENT_CONFIG = safely_load_config_file("client_config.yml", CLIENT_CONFIG_STRUCTURE)
+SERVER_CONFIG = safely_load_config_file(
+    "configs/server_config.yml", SERVER_CONFIG_STRUCTURE
+)
+SHARED_CONFIG = safely_load_config_file(
+    "configs/shared_config.yml", SHARED_CONFIG_STRUCTURE
+)
+CLIENT_CONFIG = safely_load_config_file(
+    "configs/client_config.yml", CLIENT_CONFIG_STRUCTURE
+)

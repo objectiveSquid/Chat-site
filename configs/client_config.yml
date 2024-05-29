@@ -3,4 +3,4 @@ connection:
   connect_port: 6666
 
 user:
-  token: "aaa"
+  token: ""
