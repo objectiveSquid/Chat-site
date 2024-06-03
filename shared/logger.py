@@ -13,7 +13,7 @@ class ColoredFormatter(logging.Formatter):
         + colorama.Back.WHITE,
     }
 
-    def format(self, record):
+    def format(self, record: logging.LogRecord):
         log_color = self.COLORS.get(record.levelno, "")
         formatted_message = super().format(record)
         return log_color + formatted_message + colorama.Style.RESET_ALL
