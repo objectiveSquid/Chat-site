@@ -19,8 +19,15 @@ class ColoredFormatter(logging.Formatter):
         return log_color + formatted_message + colorama.Style.RESET_ALL
 
 
+_colorama_initialized = False
+
+
 def configure_logger(level: int) -> None:
-    colorama.init(autoreset=True)
+    global _colorama_initialized
+
+    if not _colorama_initialized:
+        colorama.init(autoreset=True)
+        _colorama_initialized = True
 
     console_handler = logging.StreamHandler()
     console_handler.setLevel(level)

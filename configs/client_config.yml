@@ -1,6 +1,15 @@
 connection:
   connect_address: "127.0.0.1"
   connect_port: 6666
+  authentication_timeout: 5
 
 user:
   token: ""
+  
+gui:
+  host_address: "localhost"  # It's recommended to make this localhost,
+                             # because there is no authentication in the web app.
+  host_port: 8080
+
+events:
+  event_id_bytes: 4

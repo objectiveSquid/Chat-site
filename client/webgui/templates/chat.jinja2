@@ -1,0 +1,14 @@
+{% for msg in messages %}
+<div class="chatMessageContainer">
+    <p class="chatMessageSenderAndTime">{{ msg.sender }} - {{ msg.time_sent }}</p>
+    <br>
+    <p class="chatMessageContent">{{ msg.content }}</p>
+</div>
+{% endfor %}
+<div class="chatSendContainer">
+    <form hx-post="/send_chat" hx-trigger="submit">
+        <input type="text" value="{{ secondary_username }}" style="visibility: hidden;">
+        <input class="chatSendContentField" type="text" id="chatSendContent" name="chatSendContent">
+        <button class="chatSendButton" type="submit">Send</button>
+    </form>
+</div>

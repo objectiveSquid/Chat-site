@@ -59,7 +59,7 @@ SERVER_CONFIG_STRUCTURE = {
     "connection": {
         "listen_address": str,
         "listen_port": int,
-        "wait_for_authentication_timeout_secs": int,
+        "authentication_timeout": float | int,
         "accept_backlog": int,
     },
 }
@@ -76,12 +76,19 @@ CLIENT_CONFIG_STRUCTURE = {
     "connection": {
         "connect_address": str,
         "connect_port": int,
+        "authentication_timeout": float | int,
     },
     "user": {
         "token": str,
     },
+    "gui": {
+        "host_address": str,
+        "host_port": int,
+    },
+    "events": {
+        "event_id_bytes": int,
+    },
 }
-
 
 SERVER_CONFIG = safely_load_config_file(
     "configs/server_config.yml", SERVER_CONFIG_STRUCTURE

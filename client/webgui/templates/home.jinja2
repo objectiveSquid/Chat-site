@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="/static/css/home.css">
+    <link rel="stylesheet" href="/static/css/navbar.css">
+    <link rel="stylesheet" href="/static/css/relations.css">
+    <script src="https://unpkg.com/htmx.org@1.9.12"></script>
+    {% block head %}{% endblock %}
+</head>
+
+<body>
+    <div class="homeContainer">
+        {% include "navbar.jinja2" %}
+
+        {% include "relations.jinja2" %}
+
+        <div class="mainContainer">
+        {% block mainContainer %}{% endblock %}
+        </div>
+    </div>
+</body>
+
+</html>

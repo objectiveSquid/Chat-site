@@ -1,0 +1,41 @@
+<form class="addFriendMenuContainer" hx-post="/add_friend" hx-trigger="submit" hx-target="#addFriendResult" hx-swap="innerHTML">
+    <input class="addFriendField" type="text" id="username" name="username"
+        placeholder="Enter your friends username here!">
+    <button class="addOrAcceptFriendButton" type="submit">Add friend!</button>
+</form>
+<br>
+<p class="addFriendResult" id="addFriendResult"></p>
+
+<!-- pending friend requests -->
+{% for relation in relations %}
+<div class="friendListFriend" id="friendListFriend-{{ relation.secondary_username }}">
+    {% if relation.first_is_friend and not relation.secondary_is_friend %}
+    <p class="friendListFriendName">{{ relation.secondary_username }}</p>
+    <p class="friendListFriendFriendStatus"> - Awaiting friend request response</p> <!-- LMAOOO THIS CLASS NAME PART 1 -->
+    {% elif not relation.first_is_friend and relation.secondary_is_friend %}
+    <p class="friendListFriendName">{{ relation.secondary_username }}</p>
+    <p class="friendListFriendFriendStatus"> - This person wants to add you</p> <!-- LMAOOO THIS CLASS NAME PART 2 -->
+    <form hx-post="/add_friend" hx-trigger="click"
+        hx-target="#friendListFriend-{{ relation.secondary_username }}" hx-swap="delete">
+        <input type="text" name="username" value="{{ relation.secondary_username }}" style="visibility: hidden">
+        <button class="addOrAcceptFriendButton" type="submit">Accept friend</button>
+    </form>
+    {% endif %}
+</div>
+<br>
+{% endfor %}
+
+<!-- added friends -->
+{% for relation in relations %}
+    {% if relation.first_is_friend and relation.secondary_is_friend %}
+    <div class="friendListFriend" id="friendListFriend-{{ relation.secondary_username }}">
+        <p class="friendListFriendName" id="friendListFriendName-{{ relation.secondary_username }}">{{ relation.secondary_username }}</p>
+        <form id="friendListFriendForm-{{ relation.secondary_username }}" hx-post="/remove_friend" hx-trigger="submit"
+            hx-target="#friendListFriend-{{ relation.secondary_username }}" hx-swap="delete">
+            <input type="text" name="username" value="{{ relation.secondary_username }}" style="visibility: hidden">
+            <button class="removeFriendButton" type="submit">Remove friend</button>
+        </form>
+    </div>
+    <br>
+    {% endif %}
+{% endfor %}

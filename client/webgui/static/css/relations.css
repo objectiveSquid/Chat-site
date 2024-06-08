@@ -1,0 +1,31 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
+.relationsContainer {
+    background-color: rgb(54, 57, 62);
+    height: 97.5%;
+    width: 15%;
+    position: absolute;
+    left: 0px;
+}
+
+.chatButton {
+    background-color: rgb(54,57,62);
+    border-color: rgb(66, 69, 73);
+    border-radius: 1em;
+    border-width: 1px;
+    width: 90%;
+    margin-left: 5%;
+    margin-top: 1em;
+}
+
+.chatButton:hover {
+    background-color: rgb(66, 69, 73);
+}
+
+.chatButtonUsername {
+    text-align: center;
+    position: relative;
+    font-family: "Roboto", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}

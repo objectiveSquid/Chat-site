@@ -1,0 +1,79 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap');
+
+.addFriendMenuContainer {
+    margin-top: 5%;
+    width: 85%;
+    height: 3em;
+    position: relative;
+    background-color: rgb(30, 33, 36);
+    border-radius: 1.5em;
+}
+
+.addOrAcceptFriendButton {
+    width: 10%;
+    height: 70%;
+    background-color: rgb(75, 181, 67);
+    border-radius: 99em;
+    left: 5%;
+    top: 0.25em;
+    text-align: center;
+    position: relative;
+}
+
+.friendsListFriend {
+    width: 95%;
+    height: 3em;
+    border-radius: 1em;
+    background-color: rgb(40, 43, 48);
+}
+
+.friendsListFriend:hover {
+    background-color: rgb(54, 57, 62);
+}
+
+.addFriendField {
+    margin-left: 0.75em;
+    margin-top: 0.75em;
+    width: 30%;
+    height: 1.5em;
+    position: relative;
+    font-family: "Roboto", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    border-radius: 0.5em;
+}
+
+.addFriendResult {
+    font-family: "Roboto", sans-serif;
+    font-weight: 500;
+    font-style: normal;
+    position: relative;
+    top: 5%;
+    left: 0px;
+}
+
+.friendListFriendName {
+    font-family: "Roboto", sans-serif;
+    font-weight: 500;
+    font-style: normal;
+    color: aquamarine;
+}
+
+/* LMAOOO THIS CLASS NAME */
+.friendListFriendFriendStatus {
+    font-family: "Roboto", sans-serif;
+    font-weight: 500;
+    font-style: normal;
+    color: aquamarine;
+}
+
+.removeFriendButton {
+    width: 10%;
+    height: 70%;
+    background-color: rgb(255, 87, 51);
+    border-radius: 99em;
+    left: 5%;
+    top: 5%;
+    text-align: center;
+    position: relative;
+}

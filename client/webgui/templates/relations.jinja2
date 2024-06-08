@@ -1,0 +1,8 @@
+<div class="relationsContainer">
+    {% for relation in relations %}
+    <button class="chatButton" hx-get="/chat/{{ relation.secondary_username }}" hx-trigger="click" hx-target="#mainContainer"
+        hx-swap="innerHTML">
+        <p class="chatButtonUsername">{{ relation.secondary_username }}</p>
+    </button>
+    {% endfor %}
+</div>

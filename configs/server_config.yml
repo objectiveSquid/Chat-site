@@ -12,5 +12,5 @@ connection:
   listen_address: "127.0.0.1"
   listen_port: 6666
 
-  wait_for_authentication_timeout_secs: 5
+  authentication_timeout: 5
   accept_backlog: 3
