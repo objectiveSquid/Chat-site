@@ -1,6 +1,11 @@
 # ObjectiveChat
 A web-gui chat client, and server, written in Python 3.12
 
+## Todo
+  - Add caching to packet queue
+  - Make chat page
+  - Add smooth edges to the web pages
+
 ## How it's made
 *To all the functional bros out there... Yes I'm using abstract classes and such. And I dont care if its a "waste of time"!*
 ### Client frontend
