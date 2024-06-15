@@ -1,0 +1,8 @@
+{% for msg in messages %}
+<div class="chatMessageContainer">
+    <span class="chatMessageSenderAndTime">{{ msg.sender }} - {{ msg.time_sent }}</span>
+    <br>
+    <span class="chatMessageContent">{{ msg.content }}</span>
+</div>
+<br>
+{% endfor %}

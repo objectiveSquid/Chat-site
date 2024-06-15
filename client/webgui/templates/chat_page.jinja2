@@ -1,0 +1,8 @@
+{% extends "home.jinja2" %}
+
+{% block title %}{{ secondary_username }} - ObjectiveChat{% endblock %}
+{% block head %}<link rel="stylesheet" href="/static/css/chat.css">{% endblock %}
+
+{% block mainContainer %}
+{% include "chat.jinja2" %}
+{% endblock %}

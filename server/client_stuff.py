@@ -144,6 +144,9 @@ class ServerSideClient(threading.Thread):
                     self.__username, input_packet.username  # type: ignore
                 )
                 return ServerPackets.RemoveFriend(input_packet.id)
+            case PacketType.client_send_message:
+                self.__db_wrapper.add_message(self.__username, input_packet.receiver, input_packet.content)  # type: ignore
+                return ServerPackets.SendMessage(input_packet.id)
             case _:
                 error_packet = SharedPackets.InvalidPacketType(input_packet.id)
                 error_packet.init_packet_from_params(
@@ -153,6 +156,7 @@ class ServerSideClient(threading.Thread):
                         PacketType.client_get_messages,
                         PacketType.client_add_friend,
                         PacketType.client_remove_friend,
+                        PacketType.client_send_message,
                     ]
                 )
                 return error_packet

@@ -12,6 +12,7 @@ class PacketType(UniqueValueEnum):
     client_get_messages = 102
     client_add_friend = 103
     client_remove_friend = 104
+    client_send_message = 105
 
     quit = 200
     invalid_packet_type = 201
@@ -21,6 +22,7 @@ class PacketType(UniqueValueEnum):
     server_get_messages = 302
     server_add_friend = 303
     server_remove_friend = 304
+    server_send_message = 305
 
 
 class Packet(abc.ABC):
@@ -64,6 +66,17 @@ class Packet(abc.ABC):
     def type(self) -> PacketType: ...
 
 
+class EmptyPacket(Packet, abc.ABC):
+    def init_packet_from_params(self) -> None:
+        pass
+
+    def init_packet_from_data(self, data: bytes) -> None:
+        pass
+
+    def compile_data(self) -> bytes:
+        return b""
+
+
 # Client Packets
 class ClientPackets:
 
@@ -85,16 +98,7 @@ class ClientPackets:
         def type(self) -> PacketType:
             return PacketType.client_authenticate
 
-    class GetRelations(Packet):
-        def init_packet_from_params(self) -> None:
-            pass
-
-        def init_packet_from_data(self, data: bytes) -> None:
-            pass
-
-        def compile_data(self) -> bytes:
-            return b""
-
+    class GetRelations(EmptyPacket):
         @property
         def type(self) -> PacketType:
             return PacketType.client_get_relations
@@ -107,8 +111,9 @@ class ClientPackets:
         def init_packet_from_data(self, data: bytes) -> None:
             while len(data) > 8:
                 secondary_user_length = int.from_bytes(data[:2])
-                self.__secondary_user = data[2:][:secondary_user_length].decode()
-                data = data[secondary_user_length + 2 :]
+                data = data[2:]
+                self.__secondary_user = data[:secondary_user_length].decode()
+                data = data[secondary_user_length:]
 
             self.__after = int.from_bytes(data)
 
@@ -169,20 +174,46 @@ class ClientPackets:
         def username(self) -> str:
             return self.__username
 
+    class SendMessage(Packet):
+
+        def init_packet_from_params(self, receiver: str, content: str) -> None:
+            self.__receiver = receiver
+            self.__content = content
+
+        def init_packet_from_data(self, data: bytes) -> None:
+            receiver_length = int.from_bytes(data[:2])
+            data = data[2:]
+            self.__receiver = data[:receiver_length].decode()
+            data = data[receiver_length:]
+
+            self.__content = data.decode()
+
+        def compile_data(self) -> bytes:
+            output_bytes = bytearray()
+
+            output_bytes += len(self.__receiver.encode()).to_bytes(2)
+            output_bytes += self.__receiver.encode()
+            output_bytes += self.__content.encode()
+
+            return output_bytes
+
+        @property
+        def type(self) -> PacketType:
+            return PacketType.client_send_message
+
+        @property
+        def receiver(self) -> str:
+            return self.__receiver
+
+        @property
+        def content(self) -> str:
+            return self.__content
+
 
 # Shared packets
 class SharedPackets:
 
-    class Quit(Packet):
-        def init_packet_from_params(self) -> None:
-            pass
-
-        def init_packet_from_data(self, data: bytes) -> None:
-            pass
-
-        def compile_data(self) -> bytes:
-            return b""
-
+    class Quit(EmptyPacket):
         @property
         def type(self) -> PacketType:
             return PacketType.quit
@@ -322,18 +353,18 @@ class ServerPackets:
                 sender_length = int.from_bytes(data[:2])
                 data = data[2:]
                 sender = data[:sender_length].decode()
-                sender_length = data[2:]
+                data = data[sender_length:]
 
                 receiver_length = int.from_bytes(data[:2])
                 data = data[2:]
-                receiver = data[sender_length:][:receiver_length].decode()
+                receiver = data[:receiver_length].decode()
                 data = data[receiver_length:]
 
                 time_sent = int.from_bytes(data[:8])
                 data = data[8:]
 
                 content_length = int.from_bytes(data[:8])
-                data = data[2:]
+                data = data[8:]
                 content = data[:content_length].decode()
                 data = data[content_length:]
 
@@ -379,19 +410,15 @@ class ServerPackets:
         def success(self) -> bool:
             return self.__success
 
-    class RemoveFriend(Packet):
-        def init_packet_from_params(self) -> None:
-            pass
-
-        def init_packet_from_data(self, data: bytes) -> None:
-            pass
-
-        def compile_data(self) -> bytes:
-            return b""
-
+    class RemoveFriend(EmptyPacket):
         @property
         def type(self) -> PacketType:
             return PacketType.server_remove_friend
+
+    class SendMessage(EmptyPacket):
+        @property
+        def type(self) -> PacketType:
+            return PacketType.server_send_message
 
 
 PACKET_TYPE_TO_CLASS: dict[PacketType, type[Packet]] = {
@@ -401,6 +428,7 @@ PACKET_TYPE_TO_CLASS: dict[PacketType, type[Packet]] = {
     PacketType.client_get_messages: ClientPackets.GetMessages,
     PacketType.client_add_friend: ClientPackets.AddFriend,
     PacketType.client_remove_friend: ClientPackets.RemoveFriend,
+    PacketType.client_send_message: ClientPackets.SendMessage,
     # Shared packets
     PacketType.quit: SharedPackets.Quit,
     PacketType.invalid_packet_type: SharedPackets.InvalidPacketType,
@@ -410,6 +438,7 @@ PACKET_TYPE_TO_CLASS: dict[PacketType, type[Packet]] = {
     PacketType.server_get_messages: ServerPackets.GetMessages,
     PacketType.server_add_friend: ServerPackets.AddFriend,
     PacketType.server_remove_friend: ServerPackets.RemoveFriend,
+    PacketType.server_send_message: ServerPackets.SendMessage,
 }
 
 PACKET_CLASS_TO_TYPE = {

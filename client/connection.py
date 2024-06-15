@@ -26,7 +26,7 @@ class InputEvents:
 
     @dataclasses.dataclass(frozen=True)
     class GetMessages(Event):
-        senders: list[str]
+        sender: str
         after: int
 
     @dataclasses.dataclass(frozen=True)
@@ -36,6 +36,11 @@ class InputEvents:
     @dataclasses.dataclass(frozen=True)
     class RemoveFriend(Event):
         username: str
+
+    @dataclasses.dataclass(frozen=True)
+    class SendMessage(Event):
+        receiver: str
+        content: str
 
 
 class OutputEvents:
@@ -52,6 +57,8 @@ class OutputEvents:
         success: bool
 
     class RemoveFriend(Event): ...
+
+    class SendMessage(Event): ...
 
 
 class Connection(threading.Thread):
@@ -139,7 +146,7 @@ class Connection(threading.Thread):
                 self.__output_events.append(OutputEvents.GetRelations(input_event.id, response.relations))  # type: ignore
             case InputEvents.GetMessages:
                 get_messages_packet = ClientPackets.GetMessages()
-                get_messages_packet.init_packet_from_params(input_event.senders, input_event.after)  # type: ignore
+                get_messages_packet.init_packet_from_params(input_event.sender, input_event.after)  # type: ignore
                 response = self.send_and_wait_for_response(get_messages_packet)
                 self.__output_events.append(OutputEvents.GetMessages(input_event.id, response.messages))  # type: ignore
             case InputEvents.AddFriend:
@@ -152,6 +159,11 @@ class Connection(threading.Thread):
                 remove_friend_packet.init_packet_from_params(input_event.username)  # type: ignore
                 self.send_and_wait_for_response(remove_friend_packet)
                 self.__output_events.append(OutputEvents.RemoveFriend(input_event.id))
+            case InputEvents.SendMessage:
+                send_message_packet = ClientPackets.SendMessage()
+                send_message_packet.init_packet_from_params(input_event.receiver, input_event.content)  # type: ignore
+                self.send_and_wait_for_response(send_message_packet)
+                self.__output_events.append(OutputEvents.SendMessage(input_event.id))
 
     def send_and_wait_for_response(self, send_packet: Packet) -> Packet:
         self.__packet_sock.send(send_packet)

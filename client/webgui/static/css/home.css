@@ -5,9 +5,10 @@
 }
 
 .mainContainer {
-    width: 85%;
-    height: 95%;
+    width: 85vw;
+    height: 97.5vh;
     margin-left: 15%;
+    position: relative;
     overflow: scroll;
     background-color: rgb(40, 43, 48);
 }

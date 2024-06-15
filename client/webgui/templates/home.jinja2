@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 
-<html>
+<html lang="en-US">
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0">
     <title>{% block title %}{% endblock %}</title>
     <link rel="stylesheet" href="/static/css/home.css">
     <link rel="stylesheet" href="/static/css/navbar.css">
@@ -11,13 +13,16 @@
     {% block head %}{% endblock %}
 </head>
 
+<!-- this is for various htmx uses -->
+<div id="dummyElement"></div>
+
 <body>
     <div class="homeContainer">
         {% include "navbar.jinja2" %}
 
         {% include "relations.jinja2" %}
 
-        <div class="mainContainer">
+        <div class="mainContainer" id="mainContainer">
         {% block mainContainer %}{% endblock %}
         </div>
     </div>

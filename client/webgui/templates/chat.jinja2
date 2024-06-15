@@ -1,14 +1,10 @@
-{% for msg in messages %}
-<div class="chatMessageContainer">
-    <p class="chatMessageSenderAndTime">{{ msg.sender }} - {{ msg.time_sent }}</p>
-    <br>
-    <p class="chatMessageContent">{{ msg.content }}</p>
-</div>
-{% endfor %}
-<div class="chatSendContainer">
-    <form hx-post="/send_chat" hx-trigger="submit">
-        <input type="text" value="{{ secondary_username }}" style="visibility: hidden;">
-        <input class="chatSendContentField" type="text" id="chatSendContent" name="chatSendContent">
-        <button class="chatSendButton" type="submit">Send</button>
-    </form>
-</div>
+<div id="chatMessages"></div>
+<form class="chatSendContainer" hx-post="/send_message" hx-trigger="submit" hx-swap="none" hx-target="#dummyElement">
+    <input class="chatSendContentField" type="text" name="content">
+    <button class="chatSendButton" type="submit">Send</button>
+    <input style="display: none;" name="receiver" value="{{ secondary_username }}">
+</form>
+
+<!-- this reloads the chat every second -->
+<!-- i know it's "scheiße", dont tell me -->
+<div hx-trigger="every 1s" hx-get="/chat_messages/{{ secondary_username }}" hx-target="#chatMessages" hx-swap="innerHTML"></div>

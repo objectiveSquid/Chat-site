@@ -88,7 +88,7 @@ class DBWrapper:
         self, first_user: str, second_user: str, time_back_secs: int
     ) -> list[Message]:
         self.__cursor.execute(
-            "SELECT sender, content, time_sent FROM messages WHERE sender IN (?, ?) AND receiver IN (?, ?) AND time_sent >= ?",
+            "SELECT sender_username, content, time_sent FROM messages WHERE sender_username IN (?, ?) AND receiver_username IN (?, ?) AND time_sent >= ?",
             [
                 first_user,
                 second_user,
@@ -102,8 +102,8 @@ class DBWrapper:
             Message(
                 sender,
                 first_user if sender == second_user else first_user,
-                content,
                 time_sent,
+                content,
             )
             for sender, content, time_sent in self.__cursor.fetchall()
         ]

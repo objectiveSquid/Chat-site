@@ -14,7 +14,6 @@
     font-variation-settings:
         "wdth" 100;
     position: relative;
-    left: 0px;
 }
 
 .chatMessageContent {
@@ -25,31 +24,34 @@
     font-variation-settings:
         "wdth" 100;
     position: relative;
-    left: 0px;
+    margin-left: 1em;
 }
 
 .chatSendContainer {
     position: absolute;
-    bottom: 5%;
-    left: 5%;
+    display: flex;
+    bottom: 0.5vw;
+    left: 0.5vw;
 }
 
 .chatSendContentField {
     position: relative;
-    left: 5%;
-    top: 10%;
-    height: 80%;
-    width: 90%;
-    border-radius: 2em;
+    height: 2em;
+    width: 80vw;
+    border-radius: 0.75em;
     background-color: rgb(66, 69, 73);
+    font-size: medium;
+    color: rgb(255, 255, 255);
+    border-style: hidden;
 }
 
 .chatSendButton {
     background-color: rgb(114, 137, 218);
     border-radius: 99em;
     position: relative;
-    left: 1%;
-    top: 1%;
-    width: 8%;
-    height: 8%;
+    width: 3vw;
+    height: 2em;
+    margin-left: 0.5vw;
+    align-self: center;
+    text-overflow: clip;
 }
